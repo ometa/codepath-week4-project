@@ -11,6 +11,9 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
+    <android:uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <android:uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <application
         android:name="com.codepath.apps.twitterclient.TwitterApplication"
         android:allowBackup="true"
@@ -22,10 +25,10 @@
             android:value="RestClient.db" />
         <meta-data
             android:name="AA_DB_VERSION"
-            android:value="1" />
+            android:value="2" />
 
         <activity
-            android:name="com.codepath.apps.twitterclient.LoginActivity"
+            android:name="com.codepath.apps.twitterclient.activities.LoginActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme" >
             <intent-filter>
@@ -43,6 +46,11 @@
                     android:host="cptwitterclient"
                     android:scheme="oauth" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name="com.codepath.apps.twitterclient.activities.TimelineActivity"
+            android:label="@string/title_activity_timeline"
+            android:theme="@style/AppTheme.NoActionBar" >
         </activity>
     </application>
 

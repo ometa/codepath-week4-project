@@ -2,6 +2,8 @@ package com.codepath.apps.twitterclient;
 
 import android.content.Context;
 
+import com.codepath.apps.twitterclient.network.TwitterClient;
+
 /*
  * This is the Android application itself and is used to configure various settings
  * including the image cache in memory and on disk. This also adds a singleton
