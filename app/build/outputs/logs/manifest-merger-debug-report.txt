@@ -46,7 +46,7 @@ MERGED from [com.android.support:support-v4:23.0.0] /Users/devin/repo/android/co
 	android:theme
 		ADDED from /Users/devin/repo/android/codepath-week3-project/app/src/main/AndroidManifest.xml:19:9-40
 	android:name
-		ADDED from /Users/devin/repo/android/codepath-week3-project/app/src/main/AndroidManifest.xml:15:9-71
+		ADDED from /Users/devin/repo/android/codepath-week3-project/app/src/main/AndroidManifest.xml:15:9-43
 meta-data#AA_DB_NAME
 ADDED from /Users/devin/repo/android/codepath-week3-project/app/src/main/AndroidManifest.xml:20:9-22:45
 	android:value
@@ -94,6 +94,6 @@ ADDED from /Users/devin/repo/android/codepath-week3-project/app/src/main/Android
 data
 ADDED from /Users/devin/repo/android/codepath-week3-project/app/src/main/AndroidManifest.xml:42:17-44:46
 	android:host
-		ADDED from /Users/devin/repo/android/codepath-week3-project/app/src/main/AndroidManifest.xml:43:21-42
+		ADDED from /Users/devin/repo/android/codepath-week3-project/app/src/main/AndroidManifest.xml:43:21-51
 	android:scheme
 		ADDED from /Users/devin/repo/android/codepath-week3-project/app/src/main/AndroidManifest.xml:44:21-43
