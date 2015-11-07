@@ -3,4 +3,8 @@
     <string name="app_name">Twitter Client</string>
     <string name="login_label">Log in</string>
     <string name="title_activity_timeline">Your Timeline</string>
+    <string name="placeholder_name">Devin Breen</string>
+    <string name="placeholder_body">My cool tweet text.</string>
+    <string name="placeholder_screenname">\@screenname</string>
+    <string name="placeholder_timeago">22m</string>
 </resources>

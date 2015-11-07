@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent"
-
     android:padding="5dp"
     >
 
@@ -17,13 +16,12 @@
         android:maxHeight="50dp"
         android:minHeight="50dp"
         android:minWidth="50dp"
-
         />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="My Cool Name"
+        android:text="@string/placeholder_name"
         android:id="@+id/tvName"
         android:textSize="14sp"
         android:layout_alignParentTop="true"
@@ -33,11 +31,33 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="My cool placeholder text"
-        android:id="@+id/tvBody"
+        android:text="@string/placeholder_screenname"
+        android:id="@+id/tv_screenName"
         android:textSize="10sp"
+        android:paddingLeft="5dp"
+        android:layout_alignBottom="@+id/tvName"
+        android:layout_toRightOf="@+id/tvName"
+        android:layout_toEndOf="@+id/tvName"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/placeholder_body"
+        android:id="@+id/tvBody"
+        android:textSize="11sp"
         android:layout_below="@+id/tvName"
-        android:layout_alignBottom="@+id/ivProfileImage"
         android:layout_toRightOf="@+id/ivProfileImage"
-        android:layout_toEndOf="@+id/ivProfileImage" />
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/placeholder_timeago"
+        android:id="@+id/tvTimeAgo"
+        android:textSize="10sp"
+        android:textColor="@color/metadata"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 </RelativeLayout><!-- From: file:/Users/devin/repo/android/codepath-week3-project/app/src/main/res/layout/item_tweet.xml -->

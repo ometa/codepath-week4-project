@@ -4,13 +4,17 @@ import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Select;
+import com.codepath.apps.twitterclient.lib.DatePresenter;
 import com.codepath.apps.twitterclient.lib.JsonHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /*
@@ -25,19 +29,34 @@ public class Tweet extends Model {
 	@Column(name = "name")
 	private String name;
 
-
     private String body;
     private Long uid;
     private User user;
     private String createdAt;
+    final String TWITTER_DATE_FORMAT ="EEE MMM dd HH:mm:ss ZZZZ yyyy";   // Sat Nov 07 17:23:59 +0000 2015
 
     public Tweet() {
 		super();
 	}
 
-    // todo: change.
+    public String getTimeAgo() {
+        String result = "";
+        try {
+            SimpleDateFormat sf = new SimpleDateFormat(TWITTER_DATE_FORMAT);
+            sf.setLenient(true);
 
+            Date date = sf.parse(createdAt);
+            result = DatePresenter.shortRelativeElapsedFrom(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    // ---------------
+    // todo: are these used?
 	// Record Finders
+
 	public static Tweet byId(long id) {
 		return new Select().from(Tweet.class).where("id = ?", id).executeSingle();
 	}
@@ -45,7 +64,7 @@ public class Tweet extends Model {
 	public static List<Tweet> recentItems() {
 		return new Select().from(Tweet.class).orderBy("id DESC").limit("300").execute();
 	}
-
+    // ---------------
 
     // Decodes array of tweet json objects into objects
     public static List<Tweet> fromJson(JSONArray jsonArray) {
@@ -102,4 +121,6 @@ public class Tweet extends Model {
     public String getCreatedAt() {
         return createdAt;
     }
+
+
 }
