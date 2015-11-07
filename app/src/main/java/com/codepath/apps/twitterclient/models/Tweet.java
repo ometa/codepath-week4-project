@@ -102,6 +102,33 @@ public class Tweet extends Model {
         }
     }
 
+    public static long oldestIdFrom(JSONArray json) {
+        try {
+            if (json.length() == 0) {
+                return 0;
+            }
+            JSONObject last = json.getJSONObject(json.length() - 1);
+            return last.getLong("id");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    public static long newestIdFrom(JSONArray json) {
+        if (json.length() == 0) {
+            return 0;
+        }
+        try {
+            JSONObject first = json.getJSONObject(0);
+            return first.getLong("id");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+
     public String getName() {
         return name;
     }

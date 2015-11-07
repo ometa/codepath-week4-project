@@ -8,10 +8,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ListView;
 
-import com.activeandroid.util.Log;
+import android.util.Log;
 import com.codepath.apps.twitterclient.R;
 import com.codepath.apps.twitterclient.TwitterApplication;
 import com.codepath.apps.twitterclient.adapters.TweetsArrayAdapter;
+import com.codepath.apps.twitterclient.lib.EndlessScrollListener;
 import com.codepath.apps.twitterclient.models.Tweet;
 import com.codepath.apps.twitterclient.network.TwitterClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -33,6 +34,11 @@ public class TimelineActivity extends AppCompatActivity {
     }
     private ViewHolder viewHolder;
 
+    private long newest_id = 0;
+    private long oldest_id = 0;
+
+    private JsonHttpResponseHandler jsonHandler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +55,8 @@ public class TimelineActivity extends AppCompatActivity {
             }
         });
 
+        buildJsonHandler();
+
         viewHolder = new ViewHolder();
         viewHolder.lvTweets = (ListView) findViewById(R.id.lvTimeline);
 
@@ -58,26 +66,44 @@ public class TimelineActivity extends AppCompatActivity {
         adapter = new TweetsArrayAdapter(this, tweets);
         viewHolder.lvTweets.setAdapter(adapter);
 
-        populateTimeline();
+        viewHolder.lvTweets.setOnScrollListener(new EndlessScrollListener() {
+            @Override
+            public boolean onLoadMore(int page, int totalItemsCount) {
+                client.getOlderTimelineEntries(jsonHandler, oldest_id);
+                return true;
+            }
+        });
+
+        client.getNewTimelineEntries(jsonHandler);
     }
 
-    // send api request to get the timeline.json
-    // fill the listview by creating the tweet objects from json
-    private void populateTimeline() {
+    // This updates the max and minimum tweet ids we know about
+    // so we can continually paginate up or down.
+    private void modify_since_and_max(JSONArray json) {
+        long payload_oldest_id = Tweet.oldestIdFrom(json);
+        long payload_newest_id = Tweet.newestIdFrom(json);
+        if ((newest_id == 0) || (payload_newest_id > newest_id)) {
+            newest_id = payload_newest_id;
+        }
+        if ((oldest_id == 0) || (payload_oldest_id < oldest_id)) {
+            oldest_id = payload_oldest_id;
+        }
+    }
 
-        client.getHomeTimeline(new JsonHttpResponseHandler() {
+    private void buildJsonHandler() {
+        jsonHandler = new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray json) {
                 adapter.addAll(Tweet.fromJson(json));
-
-                Log.d(adapter.toString());
-
+                adapter.notifyDataSetChanged();
+                modify_since_and_max(json);
+                Log.d("activity", adapter.toString());
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
             }
-        });
+        };
     }
 }

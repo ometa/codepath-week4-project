@@ -36,6 +36,8 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
 
         Tweet tweet = getItem(position);
 
+        // setup viewholder
+
         ViewHolder viewHolder;
         if (convertView == null) {
             viewHolder = new ViewHolder();
@@ -49,6 +51,8 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
+
+        // set objects
 
         viewHolder.tvBody.setText(tweet.getBody());
         viewHolder.tvName.setText(tweet.getUser().getName());
