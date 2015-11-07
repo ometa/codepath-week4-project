@@ -52,6 +52,11 @@
             android:label="@string/title_activity_timeline"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
+        <activity
+            android:name="com.codepath.apps.twitterclient.activities.ComposeTweetActivity"
+            android:label="@string/title_activity_compose"
+            android:theme="@style/AppTheme" >
+        </activity>
     </application>
 
 </manifest>

@@ -33,6 +33,15 @@ public class TwitterClient extends OAuthBaseClient {
 		super(context, REST_API_CLASS, REST_URL, REST_CONSUMER_KEY, REST_CONSUMER_SECRET, REST_CALLBACK_URL);
 	}
 
+
+
+    public void getLoggedInUser(AsyncHttpResponseHandler handler) {
+        String apiUrl = getApiUrl("account/verify_credentials.json");
+        RequestParams params = new RequestParams();
+        getClient().get(apiUrl, params, handler);
+    }
+
+
     public void getOlderTimelineEntries(AsyncHttpResponseHandler handler, long max_id) {
         getOlderTimelineEntries(handler, max_id, 25);
     }
@@ -43,7 +52,6 @@ public class TwitterClient extends OAuthBaseClient {
         params.put("max_id", max_id);
         getTimelineEntries(params, handler);
     }
-
 
     public void getNewTimelineEntries(AsyncHttpResponseHandler handler) {
         getNewTimelineEntries(handler, 25);
@@ -62,10 +70,22 @@ public class TwitterClient extends OAuthBaseClient {
         getTimelineEntries(params, handler);
     }
 
+    public void postNewTweet(String status, AsyncHttpResponseHandler handler) {
+        String apiUrl = getApiUrl("statuses/update.json");
+        RequestParams params = new RequestParams();
+
+        params.put("status", status);
+
+        Log.d("client", "POST: " + apiUrl);
+        Log.d("client", "Params: " + params.toString());
+        getClient().post(apiUrl, params, handler);
+    }
+
+    // private
 
     private void getTimelineEntries(RequestParams params, AsyncHttpResponseHandler handler) {
         String apiUrl = getApiUrl("statuses/home_timeline.json");
-        Log.d("client", "Querying API URL: " + apiUrl);
+        Log.d("client", "GET: " + apiUrl);
         Log.d("client", "Params: " + params.toString());
         getClient().get(apiUrl, params, handler);
     }
