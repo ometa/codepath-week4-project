@@ -2,24 +2,24 @@ package com.codepath.apps.twitterclient.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.activeandroid.query.Select;
 import com.codepath.apps.twitterclient.R;
 import com.codepath.apps.twitterclient.TwitterApplication;
 import com.codepath.apps.twitterclient.adapters.TweetsArrayAdapter;
 import com.codepath.apps.twitterclient.lib.EndlessScrollListener;
 import com.codepath.apps.twitterclient.lib.LoggingHelper;
+import com.codepath.apps.twitterclient.lib.NetworkHelper;
 import com.codepath.apps.twitterclient.models.Tweet;
+import com.codepath.apps.twitterclient.models.User;
 import com.codepath.apps.twitterclient.network.TwitterClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -56,22 +56,15 @@ public class TimelineActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        client = TwitterApplication.getRestClient();
 
-        buildJsonHandlers();
+        handlerToBeginning = buildJsonHandler(true);
+        handlerToEnd = buildJsonHandler(false);
 
         viewHolder = new ViewHolder();
         viewHolder.lvTweets = (ListView) findViewById(R.id.lvTimeline);
         viewHolder.swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
 
-        client = TwitterApplication.getRestClient();
 
         tweets = new ArrayList<>();
         adapter = new TweetsArrayAdapter(this, tweets);
@@ -94,41 +87,54 @@ public class TimelineActivity extends AppCompatActivity {
 
         // Configure the refreshing colors
         viewHolder.swipeContainer.setColorSchemeResources(
-                android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light
+                android.R.color.holo_blue_bright, android.R.color.holo_green_light,
+                android.R.color.holo_orange_light, android.R.color.holo_red_light
         );
 
-        // finally, load the default timeline entries
-        client.getNewTimelineEntries(handlerToEnd);
+
+        // Final step: Load initial Data
+        // - if we have internet, load fresh
+        // - otherwise, load from local cache
+        if (NetworkHelper.isUp(this)) {
+            Tweet.deleteAll();
+            User.deleteAll();
+            client.getNewTimelineEntries(handlerToEnd);
+        } else {
+            Toast.makeText(this, R.string.check_internet, Toast.LENGTH_SHORT).show();
+            adapter.addAll(Tweet.getAll());
+            load_since_and_max_from_db();
+        }
     }
 
 
+    // Called by swipeContainer to refresh the newest status' at the top.
     public void fetchTimelineAsync() {
 
-        client.getNewTimelineEntries(new JsonHttpResponseHandler() {
+        if (NetworkHelper.isDown(getBaseContext())) {
+            Toast.makeText(this, R.string.check_internet, Toast.LENGTH_SHORT).show();
+            viewHolder.swipeContainer.setRefreshing(false);
 
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray json) {
-                // Remember to CLEAR OUT old items before appending in the new ones
-//                adapter.clear();
-                // ...the data has come back, add new items to your adapter...
-//                adapter.addAll(Tweet.fromJson(json));
-                adapter.addAllToBeginning(Tweet.fromJson(json));
-                adapter.notifyDataSetChanged();
-                modify_since_and_max(json);
-                // Now we call setRefreshing(false) to signal refresh has finished
-                viewHolder.swipeContainer.setRefreshing(false);
-            }
+        } else {
+            client.getNewTimelineEntries(new JsonHttpResponseHandler() {
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                String msg = LoggingHelper.logJsonFailure(errorResponse);
-                Toast.makeText(getBaseContext(), msg, Toast.LENGTH_LONG).show();
-            }
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONArray json) {
+                    // adapter.clear();
+                    adapter.addAllToBeginning(Tweet.fromJson(json));
+                    adapter.notifyDataSetChanged();
+                    modify_since_and_max(json);
+                    // Now we call setRefreshing(false) to signal refresh has finished
+                    viewHolder.swipeContainer.setRefreshing(false);
+                }
 
-        }, newest_id);
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    String msg = LoggingHelper.logJsonFailure(errorResponse);
+                    Toast.makeText(getBaseContext(), msg, Toast.LENGTH_LONG).show();
+                }
+
+            }, newest_id);
+        }
     }
 
 
@@ -150,13 +156,17 @@ public class TimelineActivity extends AppCompatActivity {
 
             case R.id.mnuLogout:
                 client.clearAccessToken();
-                Toast.makeText(this, "User logged out", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, R.string.logout_success, Toast.LENGTH_LONG).show();
                 startActivity(new Intent(this, LoginActivity.class));
                 finish();
                 break;
 
             case R.id.mnuCompose:
-                startActivityForResult(new Intent(this, ComposeTweetActivity.class), COMPOSE_TWEET);
+                if (NetworkHelper.isUp(this)) {
+                    startActivityForResult(new Intent(this, ComposeTweetActivity.class), COMPOSE_TWEET);
+                } else {
+                    Toast.makeText(this, R.string.check_internet, Toast.LENGTH_SHORT).show();
+                }
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -169,10 +179,10 @@ public class TimelineActivity extends AppCompatActivity {
             boolean success = data.getBooleanExtra("success", false);
             String message;
             if (success) {
-                message = "Successfully posted new tweet";
+                message = getString(R.string.tweet_post_success);
                 client.getNewTimelineEntries(handlerToBeginning, newest_id, 1);
             } else {
-                message = "Failed to post new tweet";
+                message = getString(R.string.tweet_post_failure);
             }
             Toast.makeText(this, message, Toast.LENGTH_LONG).show   ();
         }
@@ -192,16 +202,18 @@ public class TimelineActivity extends AppCompatActivity {
         }
     }
 
-    private void reset_since_and_max(JSONArray json) {
-        oldest_id = Tweet.oldestIdFrom(json);
-        newest_id = Tweet.newestIdFrom(json);
+    private void load_since_and_max_from_db() {
+        Tweet newest = (Tweet) new Select().from(Tweet.class).orderBy("uid DESC").limit(1).execute().get(0);
+        Tweet oldest = (Tweet) new Select().from(Tweet.class).orderBy("uid ASC").limit(1).execute().get(0);
+        newest_id = newest.getUid();
+        oldest_id = oldest.getUid();
+        Toast.makeText(this, "newest: " + newest.getUid(), Toast.LENGTH_LONG).show();
     }
 
-    private void buildJsonHandlers() {
-        handlerToBeginning = buildJsonHandler(true);
-        handlerToEnd = buildJsonHandler(false);
-    }
 
+    // This builds 2 types of JsonHttpResponseHandler objects:
+    // - Add to the beginning of the adapter
+    // - Add to the end of the adapter
     private JsonHttpResponseHandler buildJsonHandler(final boolean addToBeginning) {
         return new JsonHttpResponseHandler() {
 

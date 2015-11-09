@@ -13,4 +13,8 @@
     <string name="action_submit">Tweet</string>
     <string name="tweet">Tweet</string>
     <string name="action_logout">Logout</string>
+    <string name="check_internet">Please check your internet connection.</string>
+    <string name="logout_success">Successfully logged out</string>
+    <string name="tweet_post_success">Successfully posted new tweet</string>
+    <string name="tweet_post_failure">Failed to post new tweet</string>
 </resources>

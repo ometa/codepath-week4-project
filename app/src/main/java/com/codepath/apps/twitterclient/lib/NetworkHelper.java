@@ -6,6 +6,7 @@ import android.net.NetworkInfo;
 
 /**
  * Created by devin on 11/3/15.
+ * Helper class to check if the network is "up" or not.
  */
 public class NetworkHelper {
     public static Boolean isUp(Context context) {

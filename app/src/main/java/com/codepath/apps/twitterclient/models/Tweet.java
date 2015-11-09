@@ -3,6 +3,7 @@ package com.codepath.apps.twitterclient.models;
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
+import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
 import com.codepath.apps.twitterclient.lib.DatePresenter;
 import com.codepath.apps.twitterclient.lib.JsonHelper;
@@ -23,17 +24,22 @@ import java.util.List;
  * https://github.com/pardom/ActiveAndroid/wiki/Creating-your-database-model
  * 
  */
-@Table(name = "items")
+@Table(name = "Tweets")
 public class Tweet extends Model {
-	// Define table fields
-	@Column(name = "name")
-	private String name;
 
-    private String body;
-    private Long uid;
-    private User user;
-    private String createdAt;
     final String TWITTER_DATE_FORMAT ="EEE MMM dd HH:mm:ss ZZZZ yyyy";   // Sat Nov 07 17:23:59 +0000 2015
+
+    @Column(name = "Body")
+    private String body;
+
+    @Column(name = "Uid")
+    private Long uid;
+
+    @Column(name = "User")
+    private User user;
+
+    @Column(name = "CreatedAt")
+    private String createdAt;
 
     public Tweet() {
 		super();
@@ -53,18 +59,14 @@ public class Tweet extends Model {
         return result;
     }
 
-    // ---------------
-    // todo: are these used?
-	// Record Finders
 
-	public static Tweet byId(long id) {
-		return new Select().from(Tweet.class).where("id = ?", id).executeSingle();
-	}
+    public static List<Tweet> getAll() {
+        return new Select().all().from(Tweet.class).orderBy("uid DESC").execute();
+    }
 
-	public static List<Tweet> recentItems() {
-		return new Select().from(Tweet.class).orderBy("id DESC").limit("300").execute();
-	}
-    // ---------------
+    public static void deleteAll() {
+        new Delete().from(Tweet.class).execute();
+    }
 
     // Decodes array of tweet json objects into objects
     public static List<Tweet> fromJson(JSONArray jsonArray) {
@@ -92,9 +94,10 @@ public class Tweet extends Model {
         try {
             Tweet tweet = new Tweet();
             tweet.body = JsonHelper.findOrBlank("text", obj);
-            tweet.uid = JsonHelper.findLongOrZero("uid", obj);
+            tweet.uid = JsonHelper.findLongOrZero("id", obj);
             tweet.createdAt = JsonHelper.findOrBlank("created_at", obj);
             tweet.user = User.fromJSON(obj.getJSONObject("user"));
+            tweet.save();
             return tweet;
         } catch (JSONException e) {
             e.printStackTrace();
@@ -128,11 +131,6 @@ public class Tweet extends Model {
         }
     }
 
-
-    public String getName() {
-        return name;
-    }
-
     public String getBody() {
         return body;
     }
@@ -144,10 +142,4 @@ public class Tweet extends Model {
     public User getUser() {
         return user;
     }
-
-    public String getCreatedAt() {
-        return createdAt;
-    }
-
-
 }
