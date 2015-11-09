@@ -111,7 +111,7 @@ public class ComposeTweetActivity extends AppCompatActivity {
                 Picasso.with(getBaseContext())
                         .load(currentUser.getProfileImageUrl())
                         .transform(new RoundedCornersTransformation(5, 0))
-                        .into(viewHolder.ivProfileImage);
+                        .fit().into(viewHolder.ivProfileImage);
             }
         });
     }
