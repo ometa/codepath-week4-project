@@ -48,6 +48,7 @@
         android:textSize="11sp"
         android:layout_below="@+id/tvName"
         android:layout_toRightOf="@+id/ivProfileImage"
+        android:autoLink="web"
         />
 
     <TextView

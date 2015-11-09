@@ -22,6 +22,8 @@ import com.squareup.picasso.Picasso;
 import org.apache.http.Header;
 import org.json.JSONObject;
 
+import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
+
 public class ComposeTweetActivity extends AppCompatActivity {
 
     TwitterClient client;
@@ -98,19 +100,6 @@ public class ComposeTweetActivity extends AppCompatActivity {
     }
 
 
-    // Return false to allow normal menu processing to proceed, true to consume it here.
-        /*
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.mnuSubmitNewTweet) {
-
-        }
-        return true;
-        //return super.onOptionsItemSelected(item);
-    }
-*/
 
     private void populateCurrentUserDetails() {
         client.getLoggedInUser(new JsonHttpResponseHandler() {
@@ -121,6 +110,7 @@ public class ComposeTweetActivity extends AppCompatActivity {
                 viewHolder.tvScreenName.setText(currentUser.getScreenName());
                 Picasso.with(getBaseContext())
                         .load(currentUser.getProfileImageUrl())
+                        .transform(new RoundedCornersTransformation(5, 0))
                         .into(viewHolder.ivProfileImage);
             }
         });
