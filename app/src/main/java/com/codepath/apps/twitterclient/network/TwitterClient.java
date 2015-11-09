@@ -53,8 +53,10 @@ public class TwitterClient extends OAuthBaseClient {
         getTimelineEntries(params, handler);
     }
 
+    public final int DEFAULT_QTY = 25;
+
     public void getNewTimelineEntries(AsyncHttpResponseHandler handler) {
-        getNewTimelineEntries(handler, 25);
+        getNewTimelineEntries(handler, DEFAULT_QTY);
     }
 
     public void getNewTimelineEntries(AsyncHttpResponseHandler handler, int count) {
@@ -62,6 +64,11 @@ public class TwitterClient extends OAuthBaseClient {
         params.put("count", count);
         getTimelineEntries(params, handler);
     }
+
+    public void getNewTimelineEntries(AsyncHttpResponseHandler handler, long since_id) {
+        getNewTimelineEntries(handler, since_id, DEFAULT_QTY);
+    }
+
 
     public void getNewTimelineEntries(AsyncHttpResponseHandler handler, long since_id, int count) {
         RequestParams params = new RequestParams();

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -38,6 +39,7 @@ public class TimelineActivity extends AppCompatActivity {
 
     private class ViewHolder {
         public ListView lvTweets;
+        public SwipeRefreshLayout swipeContainer;
     }
     private ViewHolder viewHolder;
 
@@ -67,6 +69,7 @@ public class TimelineActivity extends AppCompatActivity {
 
         viewHolder = new ViewHolder();
         viewHolder.lvTweets = (ListView) findViewById(R.id.lvTimeline);
+        viewHolder.swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
 
         client = TwitterApplication.getRestClient();
 
@@ -82,8 +85,53 @@ public class TimelineActivity extends AppCompatActivity {
             }
         });
 
+        viewHolder.swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                fetchTimelineAsync();
+            }
+        });
+
+        // Configure the refreshing colors
+        viewHolder.swipeContainer.setColorSchemeResources(
+                android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light
+        );
+
+        // finally, load the default timeline entries
         client.getNewTimelineEntries(handlerToEnd);
     }
+
+
+    public void fetchTimelineAsync() {
+
+        client.getNewTimelineEntries(new JsonHttpResponseHandler() {
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray json) {
+                // Remember to CLEAR OUT old items before appending in the new ones
+//                adapter.clear();
+                // ...the data has come back, add new items to your adapter...
+//                adapter.addAll(Tweet.fromJson(json));
+                adapter.addAllToBeginning(Tweet.fromJson(json));
+                adapter.notifyDataSetChanged();
+                modify_since_and_max(json);
+                // Now we call setRefreshing(false) to signal refresh has finished
+                viewHolder.swipeContainer.setRefreshing(false);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                String msg = LoggingHelper.logJsonFailure(errorResponse);
+                Toast.makeText(getBaseContext(), msg, Toast.LENGTH_LONG).show();
+            }
+
+        }, newest_id);
+    }
+
+
 
     // Inflate the menu; this adds items to the action bar if it is present.
     @Override
@@ -142,6 +190,11 @@ public class TimelineActivity extends AppCompatActivity {
         if ((oldest_id == 0) || (payload_oldest_id < oldest_id)) {
             oldest_id = payload_oldest_id;
         }
+    }
+
+    private void reset_since_and_max(JSONArray json) {
+        oldest_id = Tweet.oldestIdFrom(json);
+        newest_id = Tweet.newestIdFrom(json);
     }
 
     private void buildJsonHandlers() {
