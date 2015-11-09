@@ -44,7 +44,8 @@ public class TimelineActivity extends AppCompatActivity {
     private long newest_id = 0;
     private long oldest_id = 0;
 
-    private JsonHttpResponseHandler jsonHandler;
+    private JsonHttpResponseHandler handlerToEnd;
+    private JsonHttpResponseHandler handlerToBeginning;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +63,7 @@ public class TimelineActivity extends AppCompatActivity {
             }
         });
 
-        buildJsonHandler();
+        buildJsonHandlers();
 
         viewHolder = new ViewHolder();
         viewHolder.lvTweets = (ListView) findViewById(R.id.lvTimeline);
@@ -76,12 +77,12 @@ public class TimelineActivity extends AppCompatActivity {
         viewHolder.lvTweets.setOnScrollListener(new EndlessScrollListener() {
             @Override
             public boolean onLoadMore(int page, int totalItemsCount) {
-                client.getOlderTimelineEntries(jsonHandler, oldest_id);
+                client.getOlderTimelineEntries(handlerToEnd, oldest_id);
                 return true;
             }
         });
 
-        client.getNewTimelineEntries(jsonHandler);
+        client.getNewTimelineEntries(handlerToEnd);
     }
 
     // Inflate the menu; this adds items to the action bar if it is present.
@@ -113,7 +114,7 @@ public class TimelineActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    // Actions when returning from other activities
+    // Actions when we return from compose tweet activity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == COMPOSE_TWEET && resultCode == RESULT_OK) {
@@ -121,10 +122,11 @@ public class TimelineActivity extends AppCompatActivity {
             String message;
             if (success) {
                 message = "Successfully posted new tweet";
+                client.getNewTimelineEntries(handlerToBeginning, newest_id, 1);
             } else {
                 message = "Failed to post new tweet";
             }
-            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, message, Toast.LENGTH_LONG).show   ();
         }
     }
 
@@ -142,12 +144,21 @@ public class TimelineActivity extends AppCompatActivity {
         }
     }
 
-    private void buildJsonHandler() {
-        jsonHandler = new JsonHttpResponseHandler() {
+    private void buildJsonHandlers() {
+        handlerToBeginning = buildJsonHandler(true);
+        handlerToEnd = buildJsonHandler(false);
+    }
+
+    private JsonHttpResponseHandler buildJsonHandler(final boolean addToBeginning) {
+        return new JsonHttpResponseHandler() {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray json) {
-                adapter.addAll(Tweet.fromJson(json));
+                if (addToBeginning) {
+                    adapter.addAllToBeginning(Tweet.fromJson(json));
+                } else {
+                    adapter.addAll(Tweet.fromJson(json));
+                }
                 adapter.notifyDataSetChanged();
                 modify_since_and_max(json);
                 Log.d("activity", adapter.toString());

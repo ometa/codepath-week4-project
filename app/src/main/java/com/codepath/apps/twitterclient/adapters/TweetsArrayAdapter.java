@@ -31,6 +31,12 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
         super(context, R.layout.item_tweet, tweets);
     }
 
+    public void addAllToBeginning(List<Tweet> tweets) {
+        for (Tweet tweet : tweets) {
+            this.insert(tweet, 0);
+        }
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
