@@ -41,11 +41,16 @@ The following **additional** features are implemented:
 * [x] Explain to the end-user if they are rate-limited
 * [x] Images use slightly rounded corners
 
-## Video Walkthrough 
+## Video Walkthroughs
 
 Here's a walkthrough of implemented user stories:
 
-<img src='http://i.imgur.com/link/to/your/gif/file.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='https://github.com/ometa/codepath-week3-project/blob/master/demo/walkthrough.gif' title='Video Walkthrough 1' width='' alt='Video Walkthrough 1' />
+
+Here is another walkthrough showing the Toast to the user when Twitter's
+API rate limit kicks in.
+
+<img src='https://github.com/ometa/codepath-week3-project/blob/master/demo/walkthrough2.gif' title='Video Walkthrough 2' width='' alt='Video Walkthrough 2' />
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 

@@ -207,7 +207,6 @@ public class TimelineActivity extends AppCompatActivity {
         Tweet oldest = (Tweet) new Select().from(Tweet.class).orderBy("uid ASC").limit(1).execute().get(0);
         newest_id = newest.getUid();
         oldest_id = oldest.getUid();
-        Toast.makeText(this, "newest: " + newest.getUid(), Toast.LENGTH_LONG).show();
     }
 
 
