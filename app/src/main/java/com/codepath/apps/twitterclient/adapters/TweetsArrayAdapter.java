@@ -70,7 +70,7 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
         Picasso.with(getContext())
                 .load(tweet.getUser().getProfileImageUrl())
                 .transform(new RoundedCornersTransformation(5, 0))
-                .fit().into(viewHolder.ivProfileImage);
+                .into(viewHolder.ivProfileImage);
 
         return convertView;
     }
