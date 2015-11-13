@@ -2,20 +2,32 @@ package com.codepath.apps.twitterclient.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.astuetz.PagerSlidingTabStrip;
 import com.codepath.apps.twitterclient.R;
 import com.codepath.apps.twitterclient.TwitterApplication;
+import com.codepath.apps.twitterclient.fragments.HomeTimelineFragment;
+import com.codepath.apps.twitterclient.fragments.MentionsTimelineFragment;
 import com.codepath.apps.twitterclient.lib.NetworkHelper;
 
 public class TimelineActivity extends AppCompatActivity {
 
     private static final int COMPOSE_TWEET = 69;
 
+    public class ViewHolder {
+        public ViewPager vpPager;
+        public PagerSlidingTabStrip tabStrip;
+    }
+    public ViewHolder viewHolder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +35,29 @@ public class TimelineActivity extends AppCompatActivity {
         setContentView(R.layout.activity_timeline);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        viewHolder = new ViewHolder();
+
+        /*
+        // get viewpager
+        viewHolder.vpPager = (ViewPager) findViewById(R.id.viewpager);
+        // set the viewpager adapter for the pager
+        viewHolder.vpPager.setAdapter(new TweetsPagerAdapter(getSupportFragmentManager()));
+        // find the sliding tabstrip
+        viewHolder.tabStrip = (PagerSlidingTabStrip) findViewById(R.id.tabs);
+        // attach the tabstrip to the viewpager
+        viewHolder.tabStrip.setViewPager(viewHolder.vpPager);
+*/
+
+
+        // Get the ViewPager and set it's PagerAdapter so that it can display items
+        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        viewPager.setAdapter(new TweetsPagerAdapter(getSupportFragmentManager()));
+
+        // Give the PagerSlidingTabStrip the ViewPager
+        PagerSlidingTabStrip tabsStrip = (PagerSlidingTabStrip) findViewById(R.id.tabs);
+        // Attach the view pager to the tab strip
+        tabsStrip.setViewPager(viewPager);
     }
 
 
@@ -75,6 +110,42 @@ public class TimelineActivity extends AppCompatActivity {
                 message = getString(R.string.tweet_post_failure);
             }
             Toast.makeText(this, message, Toast.LENGTH_LONG).show   ();
+        }
+    }
+
+
+    // member class
+
+    // return the order of the fragments in the view pager
+    public class TweetsPagerAdapter extends FragmentPagerAdapter {
+        final int PAGE_COUNT = 2;
+        private String tabTitles[] = { "Home", "Mentions" };
+
+        // adapter gets the fragment manager insert or remove fragment from activity
+        public TweetsPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        // order and creation of fragments within the pager
+        @Override
+        public Fragment getItem(int position) {
+            if (position == 0) {
+                return new HomeTimelineFragment();
+            } else if (position == 1) {
+                return new MentionsTimelineFragment();
+            } else {
+                return null;
+            }
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return tabTitles[position];
+        }
+
+        @Override
+        public int getCount() {
+            return tabTitles.length;
         }
     }
 }
