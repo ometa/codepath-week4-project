@@ -14,4 +14,4 @@
         android:title="@string/action_logout"
         android:orderInCategory="75"
         app:showAsAction="ifRoom|collapseActionView" />
-</menu><!-- From: file:/Users/devin/repo/android/codepath-week3-project/app/src/main/res/menu/menu_timeline.xml -->
+</menu><!-- From: file:/Users/devin/repo/android/codepath-week4-project/app/src/main/res/menu/menu_timeline.xml -->

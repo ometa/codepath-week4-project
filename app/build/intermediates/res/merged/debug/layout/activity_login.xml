@@ -16,4 +16,4 @@
         android:onClick="loginToRest"
         android:text="@string/login_label" />
 
-</RelativeLayout><!-- From: file:/Users/devin/repo/android/codepath-week3-project/app/src/main/res/layout/activity_login.xml -->
+</RelativeLayout><!-- From: file:/Users/devin/repo/android/codepath-week4-project/app/src/main/res/layout/activity_login.xml -->
