@@ -69,9 +69,8 @@ public class TimelineActivity extends AppCompatActivity {
             String message;
             if (success) {
                 message = getString(R.string.tweet_post_success);
-
                 // todo: implement the below, refresh whatever fragment we are using.
-//                client.getNewTimelineEntries(handlerToBeginning, newest_id, 1);
+//              4  client.getNewTimelineEntries(handlerToBeginning, newest_id, 1);
             } else {
                 message = getString(R.string.tweet_post_failure);
             }

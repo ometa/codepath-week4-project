@@ -106,9 +106,11 @@ public abstract class TweetsListFragment extends Fragment {
 
         // Load initial Data (has to happen after we instantiate the client in the child onCreate()
         if (NetworkHelper.isUp(getActivity())) {
+            // we have internet
             Database.reset();
             initialLoadWithInternet(handlerToEnd);
         } else {
+            // no internet
             Toast.makeText(getActivity(), R.string.check_internet, Toast.LENGTH_SHORT).show();
             addAll(Tweet.getAll());
             load_since_and_max_from_db();
@@ -117,10 +119,10 @@ public abstract class TweetsListFragment extends Fragment {
         return v;
     }
 
+
     protected void addAll(List<Tweet> tweets) {
         aTweets.addAll(tweets);
     }
-
 
 
     // This updates the max and minimum tweet ids we know about
@@ -161,6 +163,7 @@ public abstract class TweetsListFragment extends Fragment {
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 String msg = LogHelper.logJsonFailure(errorResponse);
                 Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
+                viewHolder.swipeContainer.setRefreshing(false);
             }
         };
     }
