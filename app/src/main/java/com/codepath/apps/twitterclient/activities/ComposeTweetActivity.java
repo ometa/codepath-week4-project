@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 import com.codepath.apps.twitterclient.R;
 import com.codepath.apps.twitterclient.TwitterApplication;
-import com.codepath.apps.twitterclient.lib.LoggingHelper;
+import com.codepath.apps.twitterclient.lib.LogHelper;
 import com.codepath.apps.twitterclient.models.User;
 import com.codepath.apps.twitterclient.network.TwitterClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -93,7 +93,7 @@ public class ComposeTweetActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                String msg = LoggingHelper.logJsonFailure(errorResponse);
+                String msg = LogHelper.logJsonFailure(errorResponse);
                 Toast.makeText(getBaseContext(), msg, Toast.LENGTH_LONG).show();
             }
         });

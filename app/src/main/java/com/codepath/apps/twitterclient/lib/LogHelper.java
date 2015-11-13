@@ -9,7 +9,7 @@ import org.json.JSONObject;
 /**
  * Created by devin on 11/8/15.
  */
-public class LoggingHelper {
+public class LogHelper {
     public static String logJsonFailure(JSONObject errorResponse) {
 
         StringBuffer sb = new StringBuffer();

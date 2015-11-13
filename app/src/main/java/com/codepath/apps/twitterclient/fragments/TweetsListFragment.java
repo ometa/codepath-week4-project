@@ -16,7 +16,7 @@ import com.codepath.apps.twitterclient.R;
 import com.codepath.apps.twitterclient.adapters.TweetsArrayAdapter;
 import com.codepath.apps.twitterclient.lib.Database;
 import com.codepath.apps.twitterclient.lib.EndlessScrollListener;
-import com.codepath.apps.twitterclient.lib.LoggingHelper;
+import com.codepath.apps.twitterclient.lib.LogHelper;
 import com.codepath.apps.twitterclient.lib.NetworkHelper;
 import com.codepath.apps.twitterclient.models.Tweet;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -44,6 +44,7 @@ public abstract class TweetsListFragment extends Fragment {
 
     private JsonHttpResponseHandler handlerToEnd;
     private JsonHttpResponseHandler handlerToBeginning;
+    private JsonHttpResponseHandler handlerSwipeUp;
 
     protected abstract void onSwipeUp(JsonHttpResponseHandler handler);
     protected abstract void onSwipeDown(JsonHttpResponseHandler handler);
@@ -58,6 +59,7 @@ public abstract class TweetsListFragment extends Fragment {
         // setup our response handlers
         handlerToBeginning = buildJsonHandler(true);
         handlerToEnd = buildJsonHandler(false);
+        handlerSwipeUp = buildJsonSwipeUpHandler();
 
         tweets = new ArrayList<>();
         aTweets = new TweetsArrayAdapter(getActivity(), tweets);
@@ -79,14 +81,6 @@ public abstract class TweetsListFragment extends Fragment {
         );
 
         viewHolder.lvTweets.setAdapter(aTweets);
-
-        viewHolder.swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                fetchTweetsAsync();
-            }
-        });
-
         viewHolder.lvTweets.setOnScrollListener(new EndlessScrollListener() {
             @Override
             public boolean onLoadMore(int page, int totalItemsCount) {
@@ -94,6 +88,20 @@ public abstract class TweetsListFragment extends Fragment {
                 return true;
             }
         });
+
+        viewHolder.swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Toast.makeText(getActivity(), "swiping", Toast.LENGTH_SHORT).show();
+                if (NetworkHelper.isUp(getActivity())) {
+                    onSwipeUp(handlerSwipeUp);
+                } else {
+                    viewHolder.swipeContainer.setRefreshing(false);
+                    Toast.makeText(getActivity(), R.string.check_internet, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
 
 
         // Load initial Data (has to happen after we instantiate the client in the child onCreate()
@@ -105,7 +113,7 @@ public abstract class TweetsListFragment extends Fragment {
             addAll(Tweet.getAll());
             load_since_and_max_from_db();
         }
-        
+
         return v;
     }
 
@@ -113,17 +121,6 @@ public abstract class TweetsListFragment extends Fragment {
         aTweets.addAll(tweets);
     }
 
-
-    // Called by swipeContainer to refresh the newest status' at the top.
-    public void fetchTweetsAsync() {
-
-        if (NetworkHelper.isUp(getActivity())) {
-            onSwipeUp(buildJsonSwipeHandler());
-        } else {
-            viewHolder.swipeContainer.setRefreshing(false);
-            Toast.makeText(getActivity(), R.string.check_internet, Toast.LENGTH_SHORT).show();
-        }
-    }
 
 
     // This updates the max and minimum tweet ids we know about
@@ -140,14 +137,14 @@ public abstract class TweetsListFragment extends Fragment {
     }
 
     // generate from whatever's in the db
-    protected void load_since_and_max_from_db() {
+    private void load_since_and_max_from_db() {
         Tweet newest = (Tweet) new Select().from(Tweet.class).orderBy("uid DESC").limit(1).execute().get(0);
         Tweet oldest = (Tweet) new Select().from(Tweet.class).orderBy("uid ASC").limit(1).execute().get(0);
         newest_id = newest.getUid();
         oldest_id = oldest.getUid();
     }
 
-    private JsonHttpResponseHandler buildJsonSwipeHandler() {
+    private JsonHttpResponseHandler buildJsonSwipeUpHandler() {
         return new JsonHttpResponseHandler() {
 
             @Override
@@ -162,7 +159,7 @@ public abstract class TweetsListFragment extends Fragment {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                String msg = LoggingHelper.logJsonFailure(errorResponse);
+                String msg = LogHelper.logJsonFailure(errorResponse);
                 Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
             }
         };
@@ -188,7 +185,7 @@ public abstract class TweetsListFragment extends Fragment {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                String msg = LoggingHelper.logJsonFailure(errorResponse);
+                String msg = LogHelper.logJsonFailure(errorResponse);
                 Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
             }
         };
