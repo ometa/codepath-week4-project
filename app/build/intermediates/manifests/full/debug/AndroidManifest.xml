@@ -25,7 +25,7 @@
             android:value="RestClient.db" />
         <meta-data
             android:name="AA_DB_VERSION"
-            android:value="4" />
+            android:value="5" />
         <meta-data
             android:name="AA_MODELS"
             android:value="com.codepath.apps.twitterclient.models.Tweet, com.codepath.apps.twitterclient.models.User" />

@@ -97,6 +97,7 @@
     <color name="switch_thumb_normal_material_light">#fff1f1f1</color>
     <!-- From: file:/Users/devin/repo/android/codepath-week4-project/app/src/main/res/values/colors.xml -->
     <eat-comment/>
+    <color name="white">#FFFFFF</color>
     <color name="window_background">#F5F5F5</color>
     <declare-styleable name="ActionBar"><attr name="navigationMode"><enum name="normal" value="0"/><enum name="listMode" value="1"/><enum name="tabMode" value="2"/></attr><attr name="displayOptions"><flag name="none" value="0"/><flag name="useLogo" value="0x1"/><flag name="showHome" value="0x2"/><flag name="homeAsUp" value="0x4"/><flag name="showTitle" value="0x8"/><flag name="showCustom" value="0x10"/><flag name="disableHome" value="0x20"/></attr><attr name="title"/><attr format="string" name="subtitle"/><attr format="reference" name="titleTextStyle"/><attr format="reference" name="subtitleTextStyle"/><attr format="reference" name="icon"/><attr format="reference" name="logo"/><attr format="reference" name="divider"/><attr format="reference" name="background"/><attr format="reference|color" name="backgroundStacked"/><attr format="reference|color" name="backgroundSplit"/><attr format="reference" name="customNavigationLayout"/><attr name="height"/><attr format="reference" name="homeLayout"/><attr format="reference" name="progressBarStyle"/><attr format="reference" name="indeterminateProgressStyle"/><attr format="dimension" name="progressBarPadding"/><attr name="homeAsUpIndicator"/><attr format="dimension" name="itemPadding"/><attr format="boolean" name="hideOnContentScroll"/><attr format="dimension" name="contentInsetStart"/><attr format="dimension" name="contentInsetEnd"/><attr format="dimension" name="contentInsetLeft"/><attr format="dimension" name="contentInsetRight"/><attr format="dimension" name="elevation"/><attr format="reference" name="popupTheme"/></declare-styleable>
     <declare-styleable name="ActionBarLayout"><attr name="android:layout_gravity"/></declare-styleable>
@@ -327,6 +328,8 @@
     <!-- From: file:/Users/devin/repo/android/codepath-week4-project/app/src/main/res/values/strings.xml -->
     <eat-comment/>
     <string name="check_internet">Please check your internet connection.</string>
+    <string name="followers">Followers</string>
+    <string name="following">Following</string>
     <string name="login_label">Log in</string>
     <string name="logout_success">Successfully logged out</string>
     <string name="placeholder_body">My cool tweet text. It is super long and stuff.  It is a long tweet.</string>
@@ -343,6 +346,7 @@
     <string name="tweet">Tweet</string>
     <string name="tweet_post_failure">Failed to post new tweet</string>
     <string name="tweet_post_success">Successfully posted new tweet</string>
+    <string name="tweets">Tweets</string>
     <string name="whats_happening">What\'s Happening...</string>
     <!-- From: file:/Users/devin/repo/android/codepath-week4-project/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.1.0/res/values/values.xml -->
     <eat-comment/>

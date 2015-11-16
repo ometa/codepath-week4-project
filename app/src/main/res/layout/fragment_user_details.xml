@@ -3,10 +3,166 @@
     android:layout_width="match_parent" android:layout_height="match_parent"
     >
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:id="@+id/frameProfileBasics"
+        >
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/ivBannerImage"
+            android:alpha=".50"
+            />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/llProfile"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:gravity="center"
+            >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/ivProfileImage"
+                android:paddingBottom="5dp"
+                android:maxWidth="50dp"
+                android:maxHeight="50dp"
+                android:minHeight="50dp"
+                android:minWidth="50dp"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/placeholder_name"
+                android:paddingBottom="5dp"
+                android:id="@+id/tvName"
+                android:textSize="14sp"
+                android:layout_below="@+id/ivProfileImage"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/placeholder_screenname"
+                android:id="@+id/tvScreenName"
+                android:textSize="12sp"
+                android:layout_below="@+id/tvName"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+    </FrameLayout>
+
+    <View android:background="#000"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:id="@+id/dividerOne"
+        android:layout_below="@+id/frameProfileBasics"
+        />
+
+    <LinearLayout
+        android:id="@+id/llStats"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/dividerOne"
+        >
+
+        <RelativeLayout
+            android:orientation="vertical"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:padding="6dp"
+            android:layout_weight="1"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvNumTweets"
+                android:text="100"
+                android:textSize="12sp"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tvNumTweets"
+                android:text="@string/tweets"
+                android:textSize="12sp"
+                />
+        </RelativeLayout>
+
+        <View android:background="#777" android:layout_width="1px" android:layout_height="match_parent"/>
+
+        <RelativeLayout
+            android:orientation="vertical"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:padding="6dp"
+            android:layout_weight="1"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvNumFollowing"
+                android:text="0"
+                android:textSize="12sp"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tvNumFollowing"
+                android:text="@string/following"
+                android:textSize="12sp"
+                />
+        </RelativeLayout>
+
+        <View android:background="#777" android:layout_width="1px" android:layout_height="match_parent"/>
+
+        <RelativeLayout
+            android:orientation="vertical"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:padding="6dp"
+            android:layout_weight="1"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvNumFollowers"
+                android:text="0"
+                android:textSize="12sp"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tvNumFollowers"
+                android:text="@string/followers"
+                android:textSize="12sp"
+                />
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <View android:background="#000"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:id="@+id/dividerTwo"
+        android:layout_below="@+id/llStats"
+        />
+
+    <!--
+
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/ivProfileImage"
+       v android:id="@+id/ivProfileImage"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
@@ -36,5 +192,8 @@
         android:layout_below="@+id/tvName"
         android:layout_toRightOf="@+id/ivProfileImage"
         android:layout_toEndOf="@+id/ivProfileImage" />
+
+    -->
+
 
 </RelativeLayout>

@@ -3,6 +3,7 @@ package com.codepath.apps.twitterclient.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,8 +22,13 @@ public class UserDetailsFragment extends Fragment {
 
     private class ViewHolder {
         public ImageView ivProfileImage;
+        public ImageView ivBannerImage;
         public TextView tvName;
         public TextView tvScreenName;
+        public TextView tvNumTweets;
+        public TextView tvNumFollowing;
+        public TextView tvNumFollowers;
+
     }
     private ViewHolder viewHolder;
 
@@ -56,13 +62,31 @@ public class UserDetailsFragment extends Fragment {
         viewHolder.ivProfileImage = (ImageView) view.findViewById(R.id.ivProfileImage);
         viewHolder.tvName = (TextView) view.findViewById(R.id.tvName);
         viewHolder.tvScreenName = (TextView) view.findViewById(R.id.tvScreenName);
+        viewHolder.ivBannerImage = (ImageView) view.findViewById(R.id.ivBannerImage);
+        viewHolder.tvNumFollowers = (TextView) view.findViewById(R.id.tvNumFollowers);
+        viewHolder.tvNumFollowing = (TextView) view.findViewById(R.id.tvNumFollowing);
+        viewHolder.tvNumTweets = (TextView) view.findViewById(R.id.tvNumTweets);
 
         // populate the views
         viewHolder.tvName.setText(user.getName());
-        viewHolder.tvScreenName.setText(user.getScreenName());
+        viewHolder.tvScreenName.setText(user.getScreenNameWithAmpersand());
+        viewHolder.tvNumFollowers.setText(user.getFollowersCount().toString());
+        viewHolder.tvNumFollowers.setText(user.getFollowersCount().toString());
+        viewHolder.tvNumTweets.setText(user.getStatusesCount().toString());
         Picasso.with(getContext())
                 .load(user.getProfileImageUrl())
                 .transform(new RoundedCornersTransformation(5, 0))
                 .fit().into(viewHolder.ivProfileImage);
+
+        // special banner image stuff
+        if (user.getProfileBannerUrl() != null) {
+            Log.d("banner load", user.getProfileBannerUrl());
+            viewHolder.tvName.setTextColor(getResources().getColor(R.color.white));
+            viewHolder.tvScreenName.setTextColor(getResources().getColor(R.color.white));
+            Picasso.with(getContext())
+                    .load((user.getProfileBannerUrl()))
+                    .fit().into(viewHolder.ivBannerImage);
+        }
     }
 }
+

@@ -34,7 +34,8 @@ public class LoginActivity extends OAuthLoginActionBarActivity<TwitterClient> {
 	@Override
 	public void onLoginSuccess() {
         User.saveCurrentUserToPrefs(getBaseContext());
-        Intent i = new Intent(this, TimelineActivity.class);
+//        Intent i = new Intent(this, TimelineActivity.class);
+        Intent i = new Intent(this, UserActivity.class);
 		startActivity(i);
 	}
 

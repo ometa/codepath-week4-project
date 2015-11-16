@@ -34,6 +34,7 @@ public class UserActivity extends AppCompatActivity {
 
         String screenName = getScreenName();
         if (screenName != null) {
+            setTitle("@" + screenName);
             fetchUserData(screenName);
         } else {
             Toast.makeText(this, "A user was not passed to this activity, and could not be loaded from user preferences.", Toast.LENGTH_LONG).show();

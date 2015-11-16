@@ -43,8 +43,20 @@ public class User extends Model implements Serializable, Parcelable {
     @Column(name = "ProfileImageUrlHttps")
     private String profileImageUrlHttps;
 
+    @Column(name = "ProfileBannerUrl")
+    private String profileBannerUrl;
+
     @Column(name = "CreatedAt")
     private Date createdAt;
+
+    @Column(name = "FollowersCount")
+    private Long followersCount;
+
+    @Column(name = "FollowingCount")
+    private Long followingCount;
+
+    @Column(name = "StatusesCount")
+    private Long statusesCount;
 
     // This method does not affect the foreign key creation.
     public List<Tweet> tweets() {
@@ -55,8 +67,13 @@ public class User extends Model implements Serializable, Parcelable {
         new Delete().from(User.class).execute();
     }
 
-    // Returns a User given the expected JSON
+    // by default we should save to the db
     public static User fromJSON(JSONObject obj) {
+        return fromJSON(obj, true);
+    }
+
+    // Returns a User given the expected JSON
+    public static User fromJSON(JSONObject obj, boolean saveToDb) {
         try {
             User u = new User();
             u.name = obj.getString("name");
@@ -64,8 +81,16 @@ public class User extends Model implements Serializable, Parcelable {
             u.screenName = obj.getString("screen_name");
             u.profileImageUrl = obj.getString("profile_image_url");
             u.profileImageUrlHttps = obj.getString("profile_image_url_https");
+            if (obj.has("profile_banner_url")) {
+                u.profileBannerUrl = obj.getString("profile_banner_url");
+            }
+            u.followersCount = obj.getLong("followers_count");
+            u.followingCount = obj.getLong("friends_count");
+            u.statusesCount = obj.getLong("statuses_count");
             u.createdAt = new Date(System.currentTimeMillis());
-            u.save();
+            if (saveToDb) {
+                u.save();
+            }
             return u;
         } catch (JSONException e) {
             e.printStackTrace();
@@ -97,36 +122,68 @@ public class User extends Model implements Serializable, Parcelable {
     // save the logged-in user object to the user preferences
     public static void saveCurrentUserToPrefs(final Context context) {
         TwitterClient client = TwitterApplication.getRestClient();
+
+        // get info about the logged-in user
         client.getLoggedInUser(new JsonHttpResponseHandler() {
+
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject json) {
-                User user = User.fromJSON(json);
-                // clear old data
-                PreferenceManager prefs = PreferenceManager.getInstance();
-                prefs.remove("logged_in_screen_name");
-                // todo: choose one of these menthods, not both
-                prefs.set("logged_in_screen_name", user.getScreenName());
-                prefs.set(user);
+                TwitterClient client = TwitterApplication.getRestClient();
+                User user = User.fromJSON(json, false);
+                String screenName = user.getScreenName();
+
+                // use that info to query the api for the full user details, then save them.
+                client.getUser(screenName, new JsonHttpResponseHandler() {
+
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONObject json) {
+                        User user = User.fromJSON(json);
+                        // clear old data
+                        PreferenceManager prefs = PreferenceManager.getInstance();
+                        prefs.remove("logged_in_screen_name");
+                        // store new data
+                        prefs.set("logged_in_screen_name", user.getScreenName());
+                    }
+                });
             }
         });
     }
 
 
+    // getters and setters
 
 
+    public String getProfileBannerUrl() {
+        return profileBannerUrl;
+    }
 
+    public void setProfileBannerUrl(String profileBannerUrl) {
+        this.profileBannerUrl = profileBannerUrl;
+    }
 
+    public Long getFollowersCount() {
+        return followersCount;
+    }
 
+    public void setFollowersCount(Long followersCount) {
+        this.followersCount = followersCount;
+    }
 
+    public Long getStatusesCount() {
+        return statusesCount;
+    }
 
+    public void setStatusesCount(Long statusesCount) {
+        this.statusesCount = statusesCount;
+    }
 
+    public Long getFollowingCount() {
+        return followingCount;
+    }
 
-
-
-
-
-
-
+    public void setFollowingCount(Long followingCount) {
+        this.followingCount = followingCount;
+    }
 
     public String getName() {
         return name;

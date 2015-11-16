@@ -17,4 +17,7 @@
     <string name="logout_success">Successfully logged out</string>
     <string name="tweet_post_success">Successfully posted new tweet</string>
     <string name="tweet_post_failure">Failed to post new tweet</string>
+    <string name="tweets">Tweets</string>
+    <string name="following">Following</string>
+    <string name="followers">Followers</string>
 </resources>
