@@ -2,6 +2,7 @@ package com.codepath.apps.twitterclient;
 
 import android.content.Context;
 
+import com.codepath.apps.twitterclient.lib.PreferenceManager;
 import com.codepath.apps.twitterclient.network.TwitterClient;
 
 /*
@@ -18,8 +19,13 @@ public class TwitterApplication extends com.activeandroid.app.Application {
 
 	@Override
 	public void onCreate() {
+
+        // for development
+        this.deleteDatabase("RestClient.db");
+
 		super.onCreate();
 		TwitterApplication.context = this;
+		PreferenceManager.initializeInstance(context);
 	}
 
 	public static TwitterClient getRestClient() {

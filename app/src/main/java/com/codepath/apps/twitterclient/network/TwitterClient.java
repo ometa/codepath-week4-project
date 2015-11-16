@@ -30,12 +30,11 @@ public class TwitterClient extends OAuthBaseClient {
 	public static final String REST_CONSUMER_SECRET = TwitterConfig.TWITTER_SECRET;
     public static final String REST_CALLBACK_URL = "oauth://cptwitterclient";
 
-    public final int DEFAULT_QTY = 25;
+    public final int DEFAULT_QTY = 50;
 
     public TwitterClient(Context context) {
 		super(context, REST_API_CLASS, REST_URL, REST_CONSUMER_KEY, REST_CONSUMER_SECRET, REST_CALLBACK_URL);
 	}
-
 
     // user
 
@@ -45,6 +44,15 @@ public class TwitterClient extends OAuthBaseClient {
         getClient().get(apiUrl, params, handler);
     }
 
+
+    public void getUser(String screenName, AsyncHttpResponseHandler handler) {
+        String apiUrl = getApiUrl("users/show.json");
+        RequestParams params = new RequestParams();
+        params.put("screen_name", screenName);
+        Log.d("client", "GET: " + apiUrl);
+        Log.d("client", "Params: " + params.toString());
+        getClient().get(apiUrl, params, handler);
+    }
 
     // home timeline
 
@@ -109,7 +117,6 @@ public class TwitterClient extends OAuthBaseClient {
         Log.d("client", "Params: " + params.toString());
         getClient().get(apiUrl, params, handler);
     }
-
 
     private void getHomeTimeline(RequestParams params, AsyncHttpResponseHandler handler) {
         String apiUrl = getApiUrl("statuses/home_timeline.json");

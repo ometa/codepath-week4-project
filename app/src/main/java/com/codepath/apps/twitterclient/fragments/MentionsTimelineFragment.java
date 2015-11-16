@@ -24,7 +24,7 @@ public class MentionsTimelineFragment extends TweetsListFragment {
 
     @Override
     protected void initialLoadWithInternet(JsonHttpResponseHandler handler) {
-        client.getNewMentionsEntries(handler);
+        //client.getNewMentionsEntries(handler);
     }
 
     @Override

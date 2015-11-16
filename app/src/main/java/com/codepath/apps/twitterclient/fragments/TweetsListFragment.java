@@ -68,11 +68,15 @@ public abstract class TweetsListFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_tweets_list, container, false);
+        return inflater.inflate(R.layout.fragment_tweets_list, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 
         viewHolder = new ViewHolder();
-        viewHolder.lvTweets = (ListView) v.findViewById(R.id.lvTimeline);
-        viewHolder.swipeContainer = (SwipeRefreshLayout) v.findViewById(R.id.swipeContainer);
+        viewHolder.lvTweets = (ListView) view.findViewById(R.id.lvTimeline);
+        viewHolder.swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
 
         // Configure the refreshing colors
         viewHolder.swipeContainer.setColorSchemeResources(
@@ -102,8 +106,6 @@ public abstract class TweetsListFragment extends Fragment {
             }
         });
 
-
-
         // Load initial Data (has to happen after we instantiate the client in the child onCreate()
         if (NetworkHelper.isUp(getActivity())) {
             // we have internet
@@ -115,15 +117,12 @@ public abstract class TweetsListFragment extends Fragment {
             addAll(Tweet.getAll());
             load_since_and_max_from_db();
         }
-
-        return v;
     }
 
-
+    // helper method, called by child classes
     protected void addAll(List<Tweet> tweets) {
         aTweets.addAll(tweets);
     }
-
 
     // This updates the max and minimum tweet ids we know about
     // so we can continually paginate up or down.

@@ -18,6 +18,7 @@ import com.codepath.apps.twitterclient.TwitterApplication;
 import com.codepath.apps.twitterclient.fragments.HomeTimelineFragment;
 import com.codepath.apps.twitterclient.fragments.MentionsTimelineFragment;
 import com.codepath.apps.twitterclient.lib.NetworkHelper;
+import com.codepath.apps.twitterclient.lib.PreferenceManager;
 
 public class TimelineActivity extends AppCompatActivity {
 
@@ -38,18 +39,6 @@ public class TimelineActivity extends AppCompatActivity {
 
         viewHolder = new ViewHolder();
 
-        /*
-        // get viewpager
-        viewHolder.vpPager = (ViewPager) findViewById(R.id.viewpager);
-        // set the viewpager adapter for the pager
-        viewHolder.vpPager.setAdapter(new TweetsPagerAdapter(getSupportFragmentManager()));
-        // find the sliding tabstrip
-        viewHolder.tabStrip = (PagerSlidingTabStrip) findViewById(R.id.tabs);
-        // attach the tabstrip to the viewpager
-        viewHolder.tabStrip.setViewPager(viewHolder.vpPager);
-*/
-
-
         // Get the ViewPager and set it's PagerAdapter so that it can display items
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         viewPager.setAdapter(new TweetsPagerAdapter(getSupportFragmentManager()));
@@ -69,7 +58,6 @@ public class TimelineActivity extends AppCompatActivity {
     }
 
 
-    // Return false to allow normal menu processing to proceed, true to consume it here.
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -78,6 +66,7 @@ public class TimelineActivity extends AppCompatActivity {
             // logout
             case R.id.mnuLogout:
                 TwitterApplication.getRestClient().clearAccessToken();
+                removeCachedScreenName();
                 Toast.makeText(this, R.string.logout_success, Toast.LENGTH_LONG).show();
                 startActivity(new Intent(this, LoginActivity.class));
                 finish();
@@ -109,13 +98,20 @@ public class TimelineActivity extends AppCompatActivity {
             } else {
                 message = getString(R.string.tweet_post_failure);
             }
-            Toast.makeText(this, message, Toast.LENGTH_LONG).show   ();
+            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         }
     }
 
 
-    // member class
+    // todo: move this somewhere more generic
+    public void removeCachedScreenName() {
+        PreferenceManager.initializeInstance(this);
+        PreferenceManager prefs = PreferenceManager.getInstance();
+        prefs.removeUser();
+    }
 
+
+    // private member class
     // return the order of the fragments in the view pager
     public class TweetsPagerAdapter extends FragmentPagerAdapter {
         final int PAGE_COUNT = 2;

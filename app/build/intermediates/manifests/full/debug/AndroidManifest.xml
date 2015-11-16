@@ -25,7 +25,7 @@
             android:value="RestClient.db" />
         <meta-data
             android:name="AA_DB_VERSION"
-            android:value="3" />
+            android:value="4" />
         <meta-data
             android:name="AA_MODELS"
             android:value="com.codepath.apps.twitterclient.models.Tweet, com.codepath.apps.twitterclient.models.User" />
@@ -59,6 +59,8 @@
             android:name="com.codepath.apps.twitterclient.activities.ComposeTweetActivity"
             android:label="@string/title_activity_compose"
             android:theme="@style/AppTheme" >
+        </activity>
+        <activity android:name="com.codepath.apps.twitterclient.activities.UserActivity" >
         </activity>
     </application>
 

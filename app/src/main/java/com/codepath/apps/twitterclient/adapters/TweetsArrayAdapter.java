@@ -1,6 +1,7 @@
 package com.codepath.apps.twitterclient.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.codepath.apps.twitterclient.R;
+import com.codepath.apps.twitterclient.activities.UserActivity;
 import com.codepath.apps.twitterclient.models.Tweet;
 import com.squareup.picasso.Picasso;
 
@@ -20,6 +22,8 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
  * Created by devin on 11/3/15.
  */
 public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
+
+    private ViewHolder viewHolder;
 
     private static class ViewHolder {
         public ImageView ivProfileImage;
@@ -42,11 +46,9 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        Tweet tweet = getItem(position);
+        final Tweet tweet = getItem(position);
 
         // setup viewholder
-
-        ViewHolder viewHolder;
         if (convertView == null) {
             viewHolder = new ViewHolder();
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_tweet, parent, false);
@@ -64,13 +66,22 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
 
         viewHolder.tvBody.setText(tweet.getBody());
         viewHolder.tvName.setText(tweet.getUser().getName());
-        viewHolder.tvScreenName.setText(tweet.getUser().getScreenName());
+        viewHolder.tvScreenName.setText(tweet.getUser().getScreenNameWithAmpersand());
         viewHolder.tvTimeago.setText(tweet.getTimeAgo());
         viewHolder.ivProfileImage.setImageResource(android.R.color.transparent);
         Picasso.with(getContext())
                 .load(tweet.getUser().getProfileImageUrl())
                 .transform(new RoundedCornersTransformation(5, 0))
                 .into(viewHolder.ivProfileImage);
+
+        viewHolder.ivProfileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getContext(), UserActivity.class);
+                i.putExtra("screen_name", tweet.getUser().getScreenName());
+                getContext().startActivity(i);
+            }
+        });
 
         return convertView;
     }
