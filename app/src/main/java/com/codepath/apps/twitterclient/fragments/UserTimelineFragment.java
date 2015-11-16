@@ -4,34 +4,46 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.codepath.apps.twitterclient.TwitterApplication;
+import com.codepath.apps.twitterclient.models.User;
 import com.codepath.apps.twitterclient.network.TwitterClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 /**
- * Created by devin on 11/13/15.
+ * Created by devin on 11/16/15.
  */
-public class MentionsTimelineFragment extends TweetsListFragment {
-
+public class UserTimelineFragment extends TweetsListFragment {
     private TwitterClient client;
+    private User user;
+
+    public UserTimelineFragment() {}
+
+    public static UserTimelineFragment newInstance(User user) {
+        UserTimelineFragment frag = new UserTimelineFragment();
+        Bundle args = new Bundle();
+        args.putParcelable("user", user);
+        frag.setArguments(args);
+        return frag;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         client = TwitterApplication.getRestClient();
+        user = getArguments().getParcelable("user");
     }
 
     @Override
     protected void initialLoadWithInternet(JsonHttpResponseHandler handler) {
-        //client.getNewMentionsEntries(handler);
+        client.getNewUserTimelineEntries(user, handler);
     }
 
     @Override
     protected void onSwipeUp(JsonHttpResponseHandler handler) {
-        client.getNewMentionEntries(handler, getNewest_id());
+        client.getNewUserTimelineEntries(user, handler, getNewest_id());
     }
 
     @Override
     protected void onSwipeDown(JsonHttpResponseHandler handler) {
-        client.getOlderMentionsEntries(handler, getOldest_id());
+        client.getOlderUserTimelineEntries(user, handler, getOldest_id());
     }
 }

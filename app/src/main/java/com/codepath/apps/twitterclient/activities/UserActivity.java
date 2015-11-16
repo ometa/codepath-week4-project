@@ -9,6 +9,7 @@ import android.widget.Toast;
 import com.codepath.apps.twitterclient.R;
 import com.codepath.apps.twitterclient.TwitterApplication;
 import com.codepath.apps.twitterclient.fragments.UserDetailsFragment;
+import com.codepath.apps.twitterclient.fragments.UserTimelineFragment;
 import com.codepath.apps.twitterclient.lib.NetworkHelper;
 import com.codepath.apps.twitterclient.lib.PreferenceManager;
 import com.codepath.apps.twitterclient.models.User;
@@ -102,8 +103,13 @@ public class UserActivity extends AppCompatActivity {
     // create and attach the fragments
     private void setupFragments(User user) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        UserDetailsFragment frag = UserDetailsFragment.newInstance(user);
-        ft.replace(R.id.frameUpper, frag);
+
+        UserDetailsFragment fragUserDetails = UserDetailsFragment.newInstance(user);
+        ft.replace(R.id.frameUpper, fragUserDetails);
+
+        UserTimelineFragment fragUserTimeline = UserTimelineFragment.newInstance(user);
+        ft.replace(R.id.frameLower, fragUserTimeline);
+        
         ft.commit();
     }
 }

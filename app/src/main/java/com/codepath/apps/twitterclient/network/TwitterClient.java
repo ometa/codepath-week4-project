@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.codepath.apps.twitterclient.config.TwitterConfig;
+import com.codepath.apps.twitterclient.models.User;
 import com.codepath.oauth.OAuthBaseClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -57,7 +58,9 @@ public class TwitterClient extends OAuthBaseClient {
     // home timeline
 
     public void getNewTimelineEntries(AsyncHttpResponseHandler handler) {
-        getNewTimelineEntries(handler, DEFAULT_QTY);
+        RequestParams params = new RequestParams();
+        params.put("count", DEFAULT_QTY);
+        getHomeTimeline(params, handler);
     }
 
     public void getNewTimelineEntries(AsyncHttpResponseHandler handler, long since_id) {
@@ -72,6 +75,31 @@ public class TwitterClient extends OAuthBaseClient {
         params.put("count", DEFAULT_QTY);
         params.put("max_id", max_id);
         getHomeTimeline(params, handler);
+    }
+
+    // user timeline
+
+    public void getNewUserTimelineEntries(User user, AsyncHttpResponseHandler handler) {
+        RequestParams params = new RequestParams();
+        params.put("screen_name", user.getScreenName());
+        params.put("count", DEFAULT_QTY);
+        getUserTimeline(params, handler);
+    }
+
+    public void getNewUserTimelineEntries(User user, AsyncHttpResponseHandler handler, long since_id) {
+        RequestParams params = new RequestParams();
+        params.put("screen_name", user.getScreenName());
+        params.put("count", DEFAULT_QTY);
+        params.put("since_id", since_id);
+        getUserTimeline(params, handler);
+    }
+
+    public void getOlderUserTimelineEntries(User user, AsyncHttpResponseHandler handler, long max_id) {
+        RequestParams params = new RequestParams();
+        params.put("screen_name", user.getScreenName());
+        params.put("count", DEFAULT_QTY);
+        params.put("max_id", max_id);
+        getUserTimeline(params, handler);
     }
 
     // mentions
@@ -120,6 +148,13 @@ public class TwitterClient extends OAuthBaseClient {
 
     private void getHomeTimeline(RequestParams params, AsyncHttpResponseHandler handler) {
         String apiUrl = getApiUrl("statuses/home_timeline.json");
+        Log.d("client", "GET: " + apiUrl);
+        Log.d("client", "Params: " + params.toString());
+        getClient().get(apiUrl, params, handler);
+    }
+
+    private void getUserTimeline(RequestParams params, AsyncHttpResponseHandler handler) {
+        String apiUrl = getApiUrl("statuses/user_timeline.json");
         Log.d("client", "GET: " + apiUrl);
         Log.d("client", "Params: " + params.toString());
         getClient().get(apiUrl, params, handler);
