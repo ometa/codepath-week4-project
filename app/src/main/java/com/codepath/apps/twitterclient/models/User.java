@@ -150,62 +150,35 @@ public class User extends Model implements Serializable, Parcelable {
     }
 
 
+    public static void removeCurrentUserFromPrefs(final Context context) {
+        PreferenceManager.initializeInstance(context);
+        PreferenceManager prefs = PreferenceManager.getInstance();
+        prefs.remove("logged_in_screen_name");
+    }
+
+
     // getters and setters
 
-
-    public String getProfileBannerUrl() {
-        return profileBannerUrl;
-    }
-
-    public void setProfileBannerUrl(String profileBannerUrl) {
-        this.profileBannerUrl = profileBannerUrl;
-    }
-
-    public Long getFollowersCount() {
-        return followersCount;
-    }
-
-    public void setFollowersCount(Long followersCount) {
-        this.followersCount = followersCount;
-    }
-
-    public Long getStatusesCount() {
-        return statusesCount;
-    }
-
-    public void setStatusesCount(Long statusesCount) {
-        this.statusesCount = statusesCount;
-    }
-
+    public Long getFollowersCount() { return followersCount; }
+    public Long getStatusesCount() { return statusesCount; }
     public Long getFollowingCount() {
         return followingCount;
     }
-
-    public void setFollowingCount(Long followingCount) {
-        this.followingCount = followingCount;
-    }
-
-    public String getName() {
-        return name;
-    }
-
     public Long getUid() {
         return uid;
     }
-
     public String getScreenName() {
         return screenName;
     }
-
     public String getScreenNameWithAmpersand() { return "@" + screenName; }
-
     public String getProfileImageUrl() {
         return profileImageUrl;
     }
-
     public String getProfileImageUrlHttps() {
         return profileImageUrlHttps;
     }
+    public String getName() { return name; }
+    public String getProfileBannerUrl() { return profileBannerUrl; }
 
     public String toString() {
         return getScreenNameWithAmpersand() + "; " + getName() + "; " + getUid();

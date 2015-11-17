@@ -6,20 +6,16 @@ import android.view.Menu;
 import android.view.View;
 
 import com.codepath.apps.twitterclient.R;
-import com.codepath.apps.twitterclient.TwitterApplication;
 import com.codepath.apps.twitterclient.models.User;
 import com.codepath.apps.twitterclient.network.TwitterClient;
 import com.codepath.oauth.OAuthLoginActionBarActivity;
 
 public class LoginActivity extends OAuthLoginActionBarActivity<TwitterClient> {
 
-    private TwitterClient client;
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
-        client = TwitterApplication.getRestClient();
 	}
 
 	// Inflate the menu; this adds items to the action bar if it is present.
@@ -35,7 +31,6 @@ public class LoginActivity extends OAuthLoginActionBarActivity<TwitterClient> {
 	public void onLoginSuccess() {
         User.saveCurrentUserToPrefs(getBaseContext());
         Intent i = new Intent(this, TimelineActivity.class);
-//        Intent i = new Intent(this, UserActivity.class);
 		startActivity(i);
 	}
 

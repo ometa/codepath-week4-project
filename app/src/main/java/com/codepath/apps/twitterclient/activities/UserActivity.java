@@ -109,7 +109,7 @@ public class UserActivity extends AppCompatActivity {
 
         UserTimelineFragment fragUserTimeline = UserTimelineFragment.newInstance(user);
         ft.replace(R.id.frameLower, fragUserTimeline);
-        
+
         ft.commit();
     }
 }

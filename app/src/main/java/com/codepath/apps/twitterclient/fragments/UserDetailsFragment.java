@@ -71,7 +71,7 @@ public class UserDetailsFragment extends Fragment {
         viewHolder.tvName.setText(user.getName());
         viewHolder.tvScreenName.setText(user.getScreenNameWithAmpersand());
         viewHolder.tvNumFollowers.setText(user.getFollowersCount().toString());
-        viewHolder.tvNumFollowers.setText(user.getFollowersCount().toString());
+        viewHolder.tvNumFollowing.setText(user.getFollowingCount().toString());
         viewHolder.tvNumTweets.setText(user.getStatusesCount().toString());
         Picasso.with(getContext())
                 .load(user.getProfileImageUrl())

@@ -56,13 +56,19 @@ public abstract class TweetsListFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // setup our response handlers
+        // setup response handlers
         handlerToBeginning = buildJsonHandler(true);
         handlerToEnd = buildJsonHandler(false);
         handlerSwipeUp = buildJsonSwipeUpHandler();
 
         tweets = new ArrayList<>();
         aTweets = new TweetsArrayAdapter(getActivity(), tweets);
+    }
+
+    // helper method to trigger the child class's onSwipeUp method.
+    // this gets called from outside the fragment.
+    public void swipeUp() {
+        onSwipeUp(handlerSwipeUp);
     }
 
     @Nullable
@@ -96,7 +102,6 @@ public abstract class TweetsListFragment extends Fragment {
         viewHolder.swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                Toast.makeText(getActivity(), "swiping", Toast.LENGTH_SHORT).show();
                 if (NetworkHelper.isUp(getActivity())) {
                     onSwipeUp(handlerSwipeUp);
                 } else {

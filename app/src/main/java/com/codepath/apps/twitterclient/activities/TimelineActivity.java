@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -15,10 +14,11 @@ import android.widget.Toast;
 import com.astuetz.PagerSlidingTabStrip;
 import com.codepath.apps.twitterclient.R;
 import com.codepath.apps.twitterclient.TwitterApplication;
+import com.codepath.apps.twitterclient.adapters.SmartFragmentStatePagerAdapter;
 import com.codepath.apps.twitterclient.fragments.HomeTimelineFragment;
 import com.codepath.apps.twitterclient.fragments.MentionsTimelineFragment;
 import com.codepath.apps.twitterclient.lib.NetworkHelper;
-import com.codepath.apps.twitterclient.lib.PreferenceManager;
+import com.codepath.apps.twitterclient.models.User;
 
 public class TimelineActivity extends AppCompatActivity {
 
@@ -29,6 +29,8 @@ public class TimelineActivity extends AppCompatActivity {
         public PagerSlidingTabStrip tabStrip;
     }
     public ViewHolder viewHolder;
+
+//    private TweetsPagerAdapter tweetsPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +43,7 @@ public class TimelineActivity extends AppCompatActivity {
 
         // Get the ViewPager and set it's PagerAdapter so that it can display items
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+
         viewPager.setAdapter(new TweetsPagerAdapter(getSupportFragmentManager()));
 
         // Give the PagerSlidingTabStrip the ViewPager
@@ -66,7 +69,7 @@ public class TimelineActivity extends AppCompatActivity {
             // logout
             case R.id.mnuLogout:
                 TwitterApplication.getRestClient().clearAccessToken();
-                removeCachedScreenName();
+                User.removeCurrentUserFromPrefs(this);
                 Toast.makeText(this, R.string.logout_success, Toast.LENGTH_LONG).show();
                 startActivity(new Intent(this, LoginActivity.class));
                 finish();
@@ -93,8 +96,7 @@ public class TimelineActivity extends AppCompatActivity {
             String message;
             if (success) {
                 message = getString(R.string.tweet_post_success);
-                // todo: implement the below, refresh whatever fragment we are using.
-//              4  client.getNewTimelineEntries(handlerToBeginning, newest_id, 1);
+                refreshHomeTimelineFragment();
             } else {
                 message = getString(R.string.tweet_post_failure);
             }
@@ -102,19 +104,16 @@ public class TimelineActivity extends AppCompatActivity {
         }
     }
 
-
-    // todo: move this somewhere more generic
-    public void removeCachedScreenName() {
-        PreferenceManager.initializeInstance(this);
-        PreferenceManager prefs = PreferenceManager.getInstance();
-        prefs.removeUser();
+    public void refreshHomeTimelineFragment() {
+        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        TweetsPagerAdapter adapter = (TweetsPagerAdapter) viewPager.getAdapter();
+        HomeTimelineFragment frag = (HomeTimelineFragment) adapter.getRegisteredFragment(0);
+        frag.swipeUp();
     }
-
 
     // private member class
     // return the order of the fragments in the view pager
-    public class TweetsPagerAdapter extends FragmentPagerAdapter {
-        final int PAGE_COUNT = 2;
+    public class TweetsPagerAdapter extends SmartFragmentStatePagerAdapter {
         private String tabTitles[] = { "Home", "Mentions" };
 
         // adapter gets the fragment manager insert or remove fragment from activity
