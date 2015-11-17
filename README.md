@@ -22,7 +22,7 @@ The following **required** functionality is completed:
 
 The following **optional** features are implemented:
 
-* [x] Implements robust error handling, [check if internet is available](http://guides.codepath.com/android/Sending-and-Managing-Network-Requests#checking-for-network-connectivity), handle error cases, network failures
+* [x] Implements robust error handling, [check if internet is available](http://guides.codepath.com/android/Sending-and-Managing-Network-Requests#checking-for-network-connectivity), handle error cases (like null response from twitter api), network failures, etc.
 * [x] Improve the user interface and theme the app to feel twitter branded
 * [ ] User can view following / followers list through the profile
 * [ ] When a network request is sent, user sees an [indeterminate progress indicator](http://guides.codepath.com/android/Handling-ProgressBars#progress-within-actionbar)
@@ -57,20 +57,17 @@ Here are the remaining **bonus** features from week 3, for posterity:
 
 ## Video Walkthroughs
 
-Here's a walkthrough of implemented user stories:
+Here is a walkthrough of implemented user stories:
 
-<img src='https://github.com/ometa/codepath-week3-project/blob/master/demo/walkthrough.gif' title='Video Walkthrough 1' width='' alt='Video Walkthrough 1' />
-
-Here is another walkthrough showing the Toast to the user when Twitter's
-API rate limit kicks in.
-
-<img src='https://github.com/ometa/codepath-week3-project/blob/master/demo/walkthrough2.gif' title='Video Walkthrough 2' width='' alt='Video Walkthrough 2' />
+<img src='https://github.com/ometa/codepath-week4-project/blob/master/demo/walkthrough.gif' title='Video Walkthrough 1' width='' alt='Video Walkthrough 1' />
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 ## Notes
 
-Moving the TimelineActivity into a Fragment was not too difficult. The more difficult and time-consuming aspect of this week's homework was modeling and implementing the shared user details fragment and ensuring that everything got hooked in correctly.
+Moving the TimelineActivity into a Fragment was not too difficult. The more difficult and time-consuming aspect of this week's homework was modeling and implementing the shared user details fragment and ensuring that everything got hooked in correctly.  It was also challenging to figure out the best logic when the internet is not available.  The app will pull items out of the database if the internet is down.  It also caches the User objects to reduce API calls.  I am also pretty proud of the abstract class TweetsListFragment and the two fragments that implement it -- HomeTimelineFragment and MentionsTimelineFragment.
+
+One issue that pops up is that the `mentions_timeline.json` API endpoint gets called multiple times when it should just get called once, and I am not sure why.  I would love some feedback on that.
 
 ## Open-source libraries used
 

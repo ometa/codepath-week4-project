@@ -34,7 +34,7 @@ public class User extends Model implements Serializable, Parcelable {
     @Column(name = "Uid")
     private Long uid;
 
-    @Column(name = "ScreenName")
+    @Column(name = "ScreenName", index = true)
     private String screenName;
 
     @Column(name = "ProfileImageUrl")
@@ -57,6 +57,8 @@ public class User extends Model implements Serializable, Parcelable {
 
     @Column(name = "StatusesCount")
     private Long statusesCount;
+
+    public User() { super(); }
 
     // This method does not affect the foreign key creation.
     public List<Tweet> tweets() {
@@ -149,15 +151,22 @@ public class User extends Model implements Serializable, Parcelable {
         });
     }
 
-
     public static void removeCurrentUserFromPrefs(final Context context) {
-        PreferenceManager.initializeInstance(context);
         PreferenceManager prefs = PreferenceManager.getInstance();
         prefs.remove("logged_in_screen_name");
     }
 
+    public static User getCurrentUser() {
+        PreferenceManager prefs = PreferenceManager.getInstance();
+        String screenName = prefs.getString("logged_in_screen_name");
+        return User.fromDbByScreenName(screenName);
+    }
 
-    // getters and setters
+    public String toString() {
+        return getScreenNameWithAmpersand() + "; " + getName() + "; " + getUid();
+    }
+
+    // getters
 
     public Long getFollowersCount() { return followersCount; }
     public Long getStatusesCount() { return statusesCount; }
@@ -180,9 +189,6 @@ public class User extends Model implements Serializable, Parcelable {
     public String getName() { return name; }
     public String getProfileBannerUrl() { return profileBannerUrl; }
 
-    public String toString() {
-        return getScreenNameWithAmpersand() + "; " + getName() + "; " + getUid();
-    }
 
     // parcelable
 
@@ -198,9 +204,11 @@ public class User extends Model implements Serializable, Parcelable {
         dest.writeString(this.screenName);
         dest.writeString(this.profileImageUrl);
         dest.writeString(this.profileImageUrlHttps);
-    }
-
-    public User() {
+        dest.writeString(this.profileBannerUrl);
+        dest.writeLong(createdAt != null ? createdAt.getTime() : -1);
+        dest.writeValue(this.followersCount);
+        dest.writeValue(this.followingCount);
+        dest.writeValue(this.statusesCount);
     }
 
     protected User(Parcel in) {
@@ -209,6 +217,12 @@ public class User extends Model implements Serializable, Parcelable {
         this.screenName = in.readString();
         this.profileImageUrl = in.readString();
         this.profileImageUrlHttps = in.readString();
+        this.profileBannerUrl = in.readString();
+        long tmpCreatedAt = in.readLong();
+        this.createdAt = tmpCreatedAt == -1 ? null : new Date(tmpCreatedAt);
+        this.followersCount = (Long) in.readValue(Long.class.getClassLoader());
+        this.followingCount = (Long) in.readValue(Long.class.getClassLoader());
+        this.statusesCount = (Long) in.readValue(Long.class.getClassLoader());
     }
 
     public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {

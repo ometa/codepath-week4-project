@@ -59,6 +59,18 @@ public class Tweet extends Model {
         return result;
     }
 
+    public static List<Tweet> getAllBy(User user) {
+        if (user == null) {
+            return new ArrayList<>();
+        }
+        return new Select().from(Tweet.class).where("User = ?", user.getId()).orderBy("uid DESC").execute();
+    }
+
+    public static void deleteAllBy(User user) {
+        for (Tweet t : Tweet.getAllBy(user)) {
+            t.delete();
+        }
+    }
 
     public static List<Tweet> getAll() {
         return new Select().all().from(Tweet.class).orderBy("uid DESC").execute();
@@ -130,6 +142,8 @@ public class Tweet extends Model {
             return 0;
         }
     }
+
+
 
     public String getBody() {
         return body;

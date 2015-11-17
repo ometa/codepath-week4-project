@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +13,6 @@ import android.widget.Toast;
 import com.activeandroid.query.Select;
 import com.codepath.apps.twitterclient.R;
 import com.codepath.apps.twitterclient.adapters.TweetsArrayAdapter;
-import com.codepath.apps.twitterclient.lib.Database;
 import com.codepath.apps.twitterclient.lib.EndlessScrollListener;
 import com.codepath.apps.twitterclient.lib.LogHelper;
 import com.codepath.apps.twitterclient.lib.NetworkHelper;
@@ -26,7 +24,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public abstract class TweetsListFragment extends Fragment {
 
@@ -49,6 +46,7 @@ public abstract class TweetsListFragment extends Fragment {
     protected abstract void onSwipeUp(JsonHttpResponseHandler handler);
     protected abstract void onSwipeDown(JsonHttpResponseHandler handler);
     protected abstract void initialLoadWithInternet(JsonHttpResponseHandler handler);
+    protected abstract void initialLoadNoInternet(TweetsArrayAdapter aTweets);
 
     public TweetsListFragment() {}
 
@@ -113,20 +111,12 @@ public abstract class TweetsListFragment extends Fragment {
 
         // Load initial Data (has to happen after we instantiate the client in the child onCreate()
         if (NetworkHelper.isUp(getActivity())) {
-            // we have internet
-            Database.reset();
             initialLoadWithInternet(handlerToEnd);
         } else {
-            // no internet
             Toast.makeText(getActivity(), R.string.check_internet, Toast.LENGTH_SHORT).show();
-            addAll(Tweet.getAll());
+            initialLoadNoInternet(aTweets);
             load_since_and_max_from_db();
         }
-    }
-
-    // helper method, called by child classes
-    protected void addAll(List<Tweet> tweets) {
-        aTweets.addAll(tweets);
     }
 
     // This updates the max and minimum tweet ids we know about
@@ -142,7 +132,7 @@ public abstract class TweetsListFragment extends Fragment {
         }
     }
 
-    // generate from whatever's in the db
+    // generate from whatever is in the db
     private void load_since_and_max_from_db() {
         Tweet newest = (Tweet) new Select().from(Tweet.class).orderBy("uid DESC").limit(1).execute().get(0);
         Tweet oldest = (Tweet) new Select().from(Tweet.class).orderBy("uid ASC").limit(1).execute().get(0);
@@ -187,7 +177,6 @@ public abstract class TweetsListFragment extends Fragment {
                 }
                 aTweets.notifyDataSetChanged();
                 modify_since_and_max(json);
-                Log.d("activity", aTweets.toString());
             }
 
             @Override

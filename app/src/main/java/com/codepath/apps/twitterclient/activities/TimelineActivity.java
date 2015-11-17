@@ -26,11 +26,9 @@ public class TimelineActivity extends AppCompatActivity {
 
     public class ViewHolder {
         public ViewPager vpPager;
-        public PagerSlidingTabStrip tabStrip;
+        public PagerSlidingTabStrip tabsStrip;
     }
     public ViewHolder viewHolder;
-
-//    private TweetsPagerAdapter tweetsPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,14 +40,13 @@ public class TimelineActivity extends AppCompatActivity {
         viewHolder = new ViewHolder();
 
         // Get the ViewPager and set it's PagerAdapter so that it can display items
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-
-        viewPager.setAdapter(new TweetsPagerAdapter(getSupportFragmentManager()));
+        viewHolder.vpPager = (ViewPager) findViewById(R.id.viewpager);
+        viewHolder.vpPager.setAdapter(new TweetsPagerAdapter(getSupportFragmentManager()));
 
         // Give the PagerSlidingTabStrip the ViewPager
-        PagerSlidingTabStrip tabsStrip = (PagerSlidingTabStrip) findViewById(R.id.tabs);
+        viewHolder.tabsStrip = (PagerSlidingTabStrip) findViewById(R.id.tabs);
         // Attach the view pager to the tab strip
-        tabsStrip.setViewPager(viewPager);
+        viewHolder.tabsStrip.setViewPager(viewHolder.vpPager);
     }
 
 
@@ -63,7 +60,6 @@ public class TimelineActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         switch(item.getItemId()) {
 
             // logout
@@ -104,9 +100,9 @@ public class TimelineActivity extends AppCompatActivity {
         }
     }
 
+    // This tells the home timeline fragment to refresh its data
     public void refreshHomeTimelineFragment() {
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        TweetsPagerAdapter adapter = (TweetsPagerAdapter) viewPager.getAdapter();
+        TweetsPagerAdapter adapter = (TweetsPagerAdapter) viewHolder.vpPager.getAdapter();
         HomeTimelineFragment frag = (HomeTimelineFragment) adapter.getRegisteredFragment(0);
         frag.swipeUp();
     }

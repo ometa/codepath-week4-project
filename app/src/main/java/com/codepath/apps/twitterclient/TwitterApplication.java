@@ -21,7 +21,7 @@ public class TwitterApplication extends com.activeandroid.app.Application {
 	public void onCreate() {
 
         // for development
-        this.deleteDatabase("RestClient.db");
+//        this.deleteDatabase("RestClient.db");
 
 		super.onCreate();
 		TwitterApplication.context = this;

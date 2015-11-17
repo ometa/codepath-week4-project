@@ -4,6 +4,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.codepath.apps.twitterclient.TwitterApplication;
+import com.codepath.apps.twitterclient.adapters.TweetsArrayAdapter;
+import com.codepath.apps.twitterclient.models.Tweet;
+import com.codepath.apps.twitterclient.models.User;
 import com.codepath.apps.twitterclient.network.TwitterClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -22,7 +25,15 @@ public class HomeTimelineFragment extends TweetsListFragment {
 
     @Override
     protected void initialLoadWithInternet(JsonHttpResponseHandler handler) {
+        // we have internet, clear out old tweets
+        Tweet.deleteAllBy(User.getCurrentUser());
         client.getNewTimelineEntries(handler);
+    }
+
+    @Override
+    protected void initialLoadNoInternet(TweetsArrayAdapter aTweets) {
+        aTweets.addAll(Tweet.getAllBy(User.getCurrentUser()));
+        aTweets.notifyDataSetChanged();
     }
 
     @Override

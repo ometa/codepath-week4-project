@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.codepath.apps.twitterclient.TwitterApplication;
+import com.codepath.apps.twitterclient.adapters.TweetsArrayAdapter;
+import com.codepath.apps.twitterclient.models.Tweet;
 import com.codepath.apps.twitterclient.models.User;
 import com.codepath.apps.twitterclient.network.TwitterClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -35,6 +37,12 @@ public class UserTimelineFragment extends TweetsListFragment {
     @Override
     protected void initialLoadWithInternet(JsonHttpResponseHandler handler) {
         client.getNewUserTimelineEntries(user, handler);
+    }
+
+    @Override
+    protected void initialLoadNoInternet(TweetsArrayAdapter aTweets) {
+        aTweets.addAll(Tweet.getAllBy(user));
+        aTweets.notifyDataSetChanged();
     }
 
     @Override
